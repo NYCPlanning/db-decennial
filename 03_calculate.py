@@ -8,7 +8,8 @@ import json
 
 df = pd.read_csv('data/intermediate.csv', index_col=False, low_memory=False)
 landarea = pd.read_excel('data/Decennial/Land Area for Decennial Profile.xlsx')
-lookup = json.load(open('data/variable_lookup.json'))
+landarea = landarea.loc[landarea.Year==2010, :]
+lookup = json.load(open('data/variable_lookup_1.json'))
 var = list(lookup.keys())
 for i in tqdm(var):
     base_variables = lookup[i]
@@ -23,11 +24,13 @@ df['PopPerAcre'] = df['Pop1']/df['LandAcres'] #need landacres first
 df['OAsnAlone'] = df['AsnAlone']-df['AsnInd']-df['Bgldsh']\
                     - df['Cambdn']-df['Chinese']-df['Filipino']\
                     - df['Indonsn']-df['Japanese']-df['Korean']\
-                    - df['Mlysn']-df['Pak']-df['SLkn']-df['Thai']-df['Vietnms']
+                    - df['Mlysn']-df['Pak']-df['SLkn']\
+                    -df['Thai']-df['Vietnms']
 
 df['AsnInCombo'] = df['AsnAlnOrC']-df['AsnAlone']
 
-df['OthrRel'] = df['PopInFHH']-df['HHldr']-df['Spouse']-df['OwnCU18']-df['NonRel']
+df['OthrRel'] = df['PopInFHH']-df['HHldr']-df['Spouse']\
+                -df['OwnCU18']-df['NonRel']
 
 df['AvgHHSz'] = df['PopInHH']/df['OcHU_1']
 
@@ -51,7 +54,6 @@ special_var = ['OAsnAlone', 'AsnInCombo', 'OthrRel',
                 'AvHHSzROc', 'MdAge', 'LandAcres', 
                 'PopPerAcre']
 
-df.to_csv(f'data/intermediate_calculated.csv', index=False,
-            columns =['state', 'place', 'county', 'tract', 'block', 
-                    'geotype', 'nta_code', 'puma']+var+special_var)
+df.to_csv('data/intermediate_calculated.csv', index=False,
+            columns =['geoid']+var+special_var)
 
