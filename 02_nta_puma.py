@@ -14,13 +14,16 @@ nta = pd.read_excel('data/nyc2010census_tabulation_equiv.xlsx',
                     names=['borough', 'fips', 'borough_code', 
                             'tract', 'puma', 'nta_code', 'nta_name'])
 
-dff = pd.merge(nta[['nta_code', 'puma', 'fips', 'tract']], dff, how='left', left_on=['fips','tract'], right_on=['county','tract'])
+dff = pd.merge(nta[['nta_code', 'puma', 'fips', 'tract']], dff, 
+                    how='left', left_on=['fips','tract'], 
+                    right_on=['county','tract'])
 nta_df = dff.groupby(['nta_code'], as_index=False).sum()
 nta_df['geotype'] = 'NTA2010'
+nta_df['geoid'] =  nta_df['nta_code']
 puma_df = dff.groupby(['puma'], as_index=False).sum()
 puma_df['geotype'] = 'PUMA2010'
+puma_df['geoid'] = puma_df['puma']
 
 df = pd.concat([df, nta_df, puma_df], sort=True)
 df.to_csv('data/intermediate.csv', index=False,
-            columns=['state', 'place', 'county', 'tract', 'block', 
-                    'geotype', 'nta_code', 'puma']+names)
+            columns=['geotype', 'geoid']+names)

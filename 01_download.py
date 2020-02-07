@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
-from utils.data import names
+from utils.data import names, fips_lookup
 
 api_key=os.environ['API_KEY']
 # tracts: 
@@ -22,6 +22,7 @@ while i < len(names):
 df_tract = pd.concat(tables, axis=1, sort=False)
 df_tract = df_tract.loc[:,~df_tract.columns.duplicated()]
 df_tract['geotype'] = 'CT2010'
+df_tract['geoid'] = df.apply(lambda row: fips_lookup[row['county']]+row['tract'], axis=1)
 print('tract level complete ...')
 
 # block: 
@@ -43,6 +44,7 @@ while i < len(names):
 df_block = pd.concat(tables, axis=1, sort=False)
 df_block = df_block.loc[:,~df_block.columns.duplicated()]
 df_block['geotype'] = 'CB2010'
+df_block['geoid'] = df.apply(lambda row: fips_lookup[row['county']]+row['tract']+row['block'], axis=1)
 print('block level complete ...')
 
 # county/boro
@@ -60,6 +62,7 @@ while i < len(names):
 df_boro = pd.concat(tables, axis=1, sort=False)
 df_boro = df_boro.loc[:,~df_boro.columns.duplicated()]
 df_boro['geotype'] = 'Boro2010'
+df_boro['geoid'] = df_boro['county'].apply(lambda x: fips_lookup[x])
 print('boro level complete ...')
 
 # county/boro
@@ -77,8 +80,10 @@ while i < len(names):
 df_city = pd.concat(tables, axis=1, sort=False)
 df_city = df_city.loc[:,~df_city.columns.duplicated()]
 df_city['geotype'] = 'City2010'
+df_city['geoid'] = '0'
 print('city level complete ...')
 
 df_combined = pd.concat([df_tract, df_block, df_boro, df_city], sort=True)
-df_combined.to_csv('data/raw.csv', columns=['state', 'place', 'county', 'tract', 'block', 'geotype']+names)
+df_combined.to_csv('data/raw.csv', columns=['state', 'place', 'county', 
+                                            'tract', 'block', 'geotype', 'geoid']+names)
 print('output to raw.csv ...')

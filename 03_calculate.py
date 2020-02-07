@@ -7,6 +7,7 @@ import math
 import json
 
 df = pd.read_csv('data/intermediate.csv', index_col=False, low_memory=False)
+landarea = pd.read_excel('data/Decennial/Land Area for Decennial Profile.xlsx')
 lookup = json.load(open('data/variable_lookup.json'))
 var = list(lookup.keys())
 for i in tqdm(var):
@@ -14,10 +15,10 @@ for i in tqdm(var):
     df[i] = np.apply_along_axis(sum, 1, df.loc[:, base_variables])
 
 # special cases:
-# df['PopPerAcre'] = df['Pop1']/df['LandAcres'] #need landacres first
-special_var = ['OAsnAlone', 'AsnInCombo', 'OthrRel', 'AvgHHSz', 
-                'PopInFam', 'AvgFamSz', 'HmOwnrVcRt', 'RntVcRt',
-                'AvHHSzOOc', 'AvHHSzROc', 'mdage']
+df = pd.merge(df, landarea[['GeoID', 'LandAcres']], 
+                how='left', left_on='geoid', right_on='GeoID')
+
+df['PopPerAcre'] = df['Pop1']/df['LandAcres'] #need landacres first
 
 df['OAsnAlone'] = df['AsnAlone']-df['AsnInd']-df['Bgldsh']\
                     - df['Cambdn']-df['Chinese']-df['Filipino']\
@@ -43,7 +44,13 @@ df['AvHHSzOOc'] = df['PopOOcHU']/df['OOcHU']
 
 df['AvHHSzROc'] = df['PopROcHU']/df['ROcHU_1']
 
-df['mdage'] = df.apply(lambda row: get_median(mdage, row), axis=1)
+df['MdAge'] = df.apply(lambda row: get_median(mdage, row), axis=1)
+
+special_var = ['OAsnAlone', 'AsnInCombo', 'OthrRel', 
+                'AvgHHSz', 'PopInFam', 'AvgFamSz', 
+                'HmOwnrVcRt', 'RntVcRt','AvHHSzOOc', 
+                'AvHHSzROc', 'MdAge', 'LandAcres', 
+                'PopPerAcre']
 
 df.to_csv(f'data/intermediate_calculated.csv', index=False,
             columns =['state', 'place', 'county', 'tract', 'block', 
