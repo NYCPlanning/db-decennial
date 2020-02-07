@@ -29,8 +29,7 @@ df['AsnInCombo'] = df['AsnAlnOrC']-df['AsnAlone']
 
 df['OthrRel'] = df['PopInFHH']-df['HHldr']-df['Spouse']-df['OwnCU18']-df['NonRel']
 
-# df['AvgHHSz'] = df['PopInHH']/df['OccHU1']
-df['AvgHHSz'] = df['PopInHH']/df['OOcHU1']
+df['AvgHHSz'] = df['PopInHH']/df['OcHU_1']
 
 df['PopInFam'] = df['PopInFHH']-df['NonRel']
 
