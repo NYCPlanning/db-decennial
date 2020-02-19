@@ -1,12 +1,16 @@
+import numpy as np
+
 def get_median(buckets, row):
     ordered = list(buckets.keys())
     N = row[ordered].sum()
-    C = 0
+    cumm = list(np.cumsum(row[ordered]))
     i = 0
-    while C <= N/2 and i<=len(buckets.keys())-1:
-        C += int(row[ordered[i]])
-        i += 1
-    i = i-1
+    for j in cumm: 
+        if j < N/2: 
+            i += 1
+        elif j >= N/2: 
+            break
+    C = cumm[i]
     if i == 0:
         median = list(buckets.values())[0][1]
     elif C == 0: 
