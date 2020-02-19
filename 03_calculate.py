@@ -9,7 +9,7 @@ import json
 df = pd.read_csv('data/intermediate.csv', index_col=False, low_memory=False)
 landarea = pd.read_excel('data/Decennial/Land Area for Decennial Profile.xlsx')
 landarea = landarea.loc[landarea.Year==2010, :]
-lookup = json.load(open('data/variable_lookup_1.json'))
+lookup = json.load(open('data/variable_lookup.json'))
 var = list(lookup.keys())
 for i in tqdm(var):
     base_variables = lookup[i]

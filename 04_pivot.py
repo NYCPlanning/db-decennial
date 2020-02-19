@@ -14,7 +14,7 @@ for i in tqdm(var):
     try:
         dff.loc[:, 'value'] = dff['value'].round(rounding.get(i))
     except: 
-        dff.loc[:, 'value'] = dff['value']
+        dff.loc[:, 'value'] = dff['value'].round(1)
     dff.loc[:, 'variable'] = i.strip()
     dff.loc[:, 'year'] = YEAR
     dff = dff[['year', 'geoid', 'variable', 'value']]

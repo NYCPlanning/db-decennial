@@ -6,9 +6,9 @@ import json
 import os
 from utils.data import names, fips_lookup
 
-lookup = json.load(open('data/variable_lookup_1.json'))
+lookup = json.load(open('data/variable_lookup.json'))
 names = list(set(sum(list(lookup.values()), [])))
-print(names)
+
 api_key=os.environ['API_KEY']
 # tracts: 
 i = 0
