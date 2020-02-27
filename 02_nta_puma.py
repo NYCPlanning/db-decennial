@@ -1,13 +1,17 @@
 import pandas as pd
 import math
 import numpy as np
-from utils.data import names
+import json
 
 df = pd.read_csv(f'data/raw.csv', index_col=False, dtype='str')
 dff = df[df.geotype=='CT2010']
+
+lookup = json.load(open('data/variable_lookup.json'))
+names = list(set(sum(list(lookup.values()), [])))
+
 # dff = dff.fillna(0)
 for i in names:
-    dff[i] = dff[i].astype(int)
+    dff[i] = dff[i].astype(float)
 
 nta = pd.read_excel('data/nyc2010census_tabulation_equiv.xlsx',
                     skiprows=4, dtype=str,

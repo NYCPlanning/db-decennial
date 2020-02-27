@@ -46,7 +46,8 @@ df['AvHHSzOOc'] = df['PopOOcHU']/df['OOcHU']
 
 df['AvHHSzROc'] = df['PopROcHU']/df['ROcHU_1']
 
-df['MdAge'] = df.apply(lambda row: get_median(mdage, row), axis=1)
+df.loc[df.geotype.isin(['PUMA2010', 'NTA2010']), 'MdAge'] = \
+    df.loc[df.geotype.isin(['PUMA2010', 'NTA2010']), :].apply(lambda row: get_median(mdage, row), axis=1)
 
 special_var = ['OAsnAlone', 'AsnInCombo', 'OthrRel', 
                 'AvgHHSz', 'PopInFam', 'AvgFamSz', 
